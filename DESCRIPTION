@@ -1,0 +1,22 @@
+Package: random2dwalk
+Title: 2D Random Walk Simulation
+Version: 0.0.0.9000
+Authors@R: 
+    person("James Joseph", "Balamuta", email = "james.balamuta@gmail.com", 
+           role = c("aut", "cre", "cph"), 
+           comment = c(ORCID = "0000-0003-2826-8458"))
+Description: A Shiny application for visualizing various 2D random walks.
+URL: https://github.com/coatless-shiny/2d-random-walk, https://shiny.thecoatlessprofessor.com/2d-random-walk/
+BugReports: https://github.com/coatless-shiny/2d-random-walk/issues
+License: AGPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports: 
+    shiny, 
+    ggplot2,
+    bslib,
+    bsicons
+Depends: 
+    R (>= 4.3.0)
+LazyData: true
