@@ -27,11 +27,11 @@ stanford_theme <- bs_theme(
 
 # UI ----
 ui <- page_navbar(
-  title = "2D Random Walk Simulator",
+  title = "2D Random Walks Simulator",
   theme = stanford_theme,
   fillable = TRUE,
   bg = "#8C1515",
-
+  
   nav_spacer(),
   
   ## Enable dark mode ----
@@ -47,8 +47,9 @@ ui <- page_navbar(
     ### Sidebar Layout ----
     layout_sidebar(
       sidebar = sidebar(
-        title = "Controls",
         open = TRUE,
+        
+        #### Control Accordion ----
         accordion(
           multiple = TRUE,
           open = c("Random Walk Settings", "Simulation Controls"),
@@ -97,9 +98,20 @@ ui <- page_navbar(
             )
           ),
           
-          #### Simulation Controls  ----
+          #### Simulation Controls ----
           accordion_panel(
             title = "Simulation Controls",
+            
+            tags$button(
+              id = "add_walk",
+              type = "button",
+              class = "btn btn-primary w-100 mb-2 action-button",
+              list(
+                bs_icon("plus-circle"),
+                "Add New Walk"
+              )
+            ),
+            
             tags$button(
               id = "single_step",
               type = "button",
@@ -109,7 +121,9 @@ ui <- page_navbar(
                 "Take Single Step"
               )
             ),
+            
             uiOutput("control_button"),
+            
             tags$button(
               id = "run_simulation",
               type = "button",
@@ -119,13 +133,14 @@ ui <- page_navbar(
                 "Run Full Simulation"
               )
             ),
+            
             tags$button(
               id = "reset",
               type = "button",
               class = "btn btn-danger w-100 action-button",
               list(
                 bs_icon("arrow-counterclockwise"),
-                "Reset"
+                "Reset All Walks"
               )
             )
           ),
@@ -147,7 +162,7 @@ ui <- page_navbar(
                         step = 1)
           ),
           
-          #### Starting Position  ----
+          #### Starting Position ----
           accordion_panel(
             title = "Starting Position",
             numericInput("start_x", 
@@ -162,51 +177,26 @@ ui <- page_navbar(
         )
       ),
       
-      ### Main content area  ----
-      card(
-        full_screen = TRUE,
-        card_header("Visualization"),
-        card_body(
-          plotOutput("walkPlot")
-        )
-      ),
-      ### Statistics area ----
-      card(
-        class = "mt-3",
-        card_header("Statistics"),
-        layout_column_wrap(
-          width = 1/2,
-          class = "p-3",
-          
-          #### Progress/Displacement ----
-          value_box(
-            title = "Progress",
-            value = textOutput("progress_stat", inline = TRUE),
-            showcase = bs_icon("graph-up-arrow"),
-            theme = "primary"
-          ),
-          value_box(
-            title = "Displacement",
-            value = textOutput("displacement_stat", inline = TRUE),
-            showcase = bs_icon("arrows-angle-expand"),
-            theme = "secondary"
+      ### Main content area ----
+      layout_column_wrap(
+        width = 1,
+        heights_equal = "row",
+        
+        #### Visualization card ----
+        card(
+          full_screen = TRUE,
+          card_header("Visualization"),
+          card_body(
+            plotOutput("walkPlot")
           )
         ),
-        layout_column_wrap(
-          width = 1/2,
-          class = "p-3",
-          #### Start/Current Position ----
-          value_box(
-            title = "Start Position",
-            value = textOutput("start_pos_stat", inline = TRUE),
-            showcase = bs_icon("geo"),
-            theme = "success"
-          ),
-          value_box(
-            title = "Current Position",
-            value = textOutput("current_pos_stat", inline = TRUE),
-            showcase = bs_icon("geo-fill"),
-            theme = "info"
+        
+        #### Statistics card ----
+        card(
+          card_header("Statistics for All Walks"),
+          card_body(
+            style = "max-height: 400px; overflow-y: auto;",
+            uiOutput("stats_table")
           )
         )
       )
@@ -219,33 +209,33 @@ ui <- page_navbar(
     icon = bs_icon("question-circle"),
     
     card(
-      card_header("How to Use the Simulator"),
+      card_header("How to Use the Random Walk Simulator"),
       card_body(
-        ## Simulation Controls Description ----
+        ### Controls Description ----
         h4("Controls"),
         tags$ul(
-          tags$li(bs_icon("skip-forward"), " Single Step: Add one step to the walk"),
-          tags$li(bs_icon("play"), " Start/Resume: Begin/resume continuous walking"),
-          tags$li(bs_icon("pause"), " Pause: Pause continuous walking"),
-          tags$li(bs_icon("fast-forward"), " Run Full: Complete all steps instantly"),
-          tags$li(bs_icon("arrow-counterclockwise"), " Reset: Clear the walk and start over")
+          tags$li(bs_icon("plus-circle"), " Add New Walk: Create a new random walk with a unique color"),
+          tags$li(bs_icon("skip-forward"), " Single Step: Add one step to all active walks"),
+          tags$li(bs_icon("play"), " Start/Resume: Begin/resume all walks"),
+          tags$li(bs_icon("pause"), " Pause: Pause all walks"),
+          tags$li(bs_icon("fast-forward"), " Run Full: Complete all walks instantly"),
+          tags$li(bs_icon("arrow-counterclockwise"), " Reset: Clear all walks and start over")
         ),
         
-        ## Distribution Types Description ----
+        ### Distribution Types Description ----
         h4("Distribution Types"),
         tags$ul(
-          tags$li(strong("Cardinal Steps"), ": Walker can only move left, right, up, or down"),
-          tags$li(strong("Diagonal Steps"), ": Walker moves diagonally in one of four directions"),
+          tags$li(strong("Cardinal Steps"), ": Walkers can only move left, right, up, or down"),
+          tags$li(strong("Diagonal Steps"), ": Walkers move diagonally in one of four directions"),
           tags$li(strong("Normal Distribution"), ": Steps are drawn from a normal distribution, allowing for more natural-looking movement")
         ),
         
-        ## Statistics Section Description ----
+        ### Statistics Section Description ----
         h4("Statistics"),
         tags$ul(
-          tags$li(strong("Progress"), ": Current step number out of total steps"),
-          tags$li(strong("Displacement"), ": Straight-line distance from start to current position"),
-          tags$li(strong("Start Position"), ": Initial coordinates of the walker"),
-          tags$li(strong("Current Position"), ": Current coordinates of the walker")
+          tags$li(strong("Progress"), ": Current step number out of total steps for each walk"),
+          tags$li(strong("Displacement"), ": Straight-line distance from start to current position for each walk"),
+          tags$li("Each walk is assigned a unique color for easy tracking")
         )
       )
     )
